@@ -1,0 +1,7 @@
+version: '3.9'
+
+services:
+  ws_chat:
+    build: .
+    ports:
+      - 10016:10016
