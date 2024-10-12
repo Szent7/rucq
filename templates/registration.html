@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RuCQ - Регистрация</title>
+    <style>
+        body {
+            background-color: #54a8a8;
+            font-family: "MS Sans Serif", Geneva, sans-serif;
+            color: #000;
+            margin: 0;
+            padding: 20px;
+        }
+        .window {
+            background-color: #F0F0F0;
+            border: 2px solid #000;
+            width: 400px;
+            margin: 50px auto;
+            padding: 0 0 10px 0;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        .title-bar {
+            background-color: #000080;
+            color: #FFFFFF;
+            padding: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .content {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .content input {
+            display: flex;
+            /* padding: 5px; */
+            flex-direction: column;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 18px;
+            margin: 0;
+            text-align: center;
+        }
+        p {
+            margin: 10px 0;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #808080;
+            margin-top: 20px;
+        }
+
+        .controls, .controls img {
+            width: 16px;
+            height: 16px;
+            padding: 0;
+            background-color: none;
+            background: none;
+            margin: 0;
+        }
+
+        button.controls, button.controls:hover {
+            border: 1px solid transparent;
+            background-color: transparent;
+        }
+        button {
+            appearance: none;
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            background-color: #ccc;
+            border: 1px solid #808080;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin: 0 2px;
+            font-family: "MS Sans Serif", Geneva, sans-serif;
+        }
+        button:hover {
+            background-color: #A0A0A0;
+        }
+        .name {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="window">
+        <div class="title-bar">
+            <div class="name">RUCQ (Руська)</div>
+            <div>
+                <button class="controls" title="Свернуть">
+                    <img src="images/hide.png" alt="Свернуть">
+                </button>
+                <button class="controls" title="Развернуть">
+                    <img src="images/expand.png" alt="Развернуть">
+                </button>
+                <button class="controls" title="Закрыть">
+                    <img src="images/close.png" alt="Закрыть">
+                </button>
+            </div>
+        </div>
+        <div class="content">
+            <form name="regform" id="regform"> 
+                <h1>Регистрация</h1>
+                <input name="login" type="text" id="username" placeholder="Имя пользователя" required/>
+                <input name="password" type="password" id="password" placeholder="Пароль" required/>
+                <input type="submit" id="loginBtn" value="Зарегистироваться"/>
+                <p id="thereisaccount">Есть аккаунт? <a href="/login">Авторизация</a></p>
+            </form>
+        </div>
+        <div class="footer">© 1995 RUCQ</div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
+<script lang="javascript">
+        window.onload = function () {
+    if (getCookie("login") != undefined && getCookie("password") != undefined && getCookie("token") != undefined) {
+        window.location.replace(location.origin + "/chat")
+    }
+}
+
+    const formReg = document.getElementById('regform');
+    formReg.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(formReg);
+    console.log("href:" + location.href)
+
+    const login = formData.get('login');
+    const password = formData.get('password');
+    var res = await addUser(login, password)
+    switch (res.message) {
+        case "user created": {
+            window.location.replace(location.origin + "/login")
+            break
+        }
+        case "user already exists": {
+            if (document.getElementById("warning") == null) {
+            var item = document.createElement("div");
+            item.innerHTML = "<b id=\"warning\">Пользователь уже существует</b>";
+            var form = document.getElementById("regform");
+            insertAfter(item,  form.lastElementChild);
+        }
+            break
+        }
+        default: {
+            if (document.getElementById("warning") == null) {
+            var item = document.createElement("div");
+            item.innerHTML = "<b id=\"warning\">Неизвестная ошибка сервера</b>";
+            var form = document.getElementById("regform");
+            insertAfter(item,  form.lastElementChild);
+        }
+            break
+        }
+    }
+    });
+</script>

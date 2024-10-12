@@ -1,58 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-<title>RuCQ</title>
-<script type="text/javascript">
-window.onload = function () {
-    var conn;
-    var msg = document.getElementById("msg");
-    var log = document.getElementById("log");
-
-    function appendLog(item) {
-        var doScroll = log.scrollTop > log.scrollHeight - log.clientHeight - 1;
-        log.appendChild(item);
-        if (doScroll) {
-            log.scrollTop = log.scrollHeight - log.clientHeight;
-        }
-    }
-
-    document.getElementById("form").onsubmit = function () {
-        if (!conn) {
-            return false;
-        }
-        if (!msg.value) {
-            return false;
-        }
-        conn.send(msg.value);
-        msg.value = "";
-        return false;
-    };
-
-    if (window["WebSocket"]) {
-        conn = new WebSocket("ws://" + document.location.host + "/ws");
-        conn.onclose = function (evt) {
-            var item = document.createElement("div");
-            item.innerHTML = "<b>Connection closed.</b>";
-            appendLog(item);
-        };
-        conn.onmessage = function (evt) {
-            var messages = evt.data.split('\n');
-            for (var i = 0; i < messages.length; i++) {
-                var item = document.createElement("div");
-                item.innerText = messages[i];
-                appendLog(item);
-            }
-        };
-    } else {
-        var item = document.createElement("div");
-        item.innerHTML = "<b>Your browser does not support WebSockets.</b>";
-        appendLog(item);
-    }
-};
-</script>
-<style type="text/css">
-
-
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RuCQ - Приватный Мессенджер</title>
+    <style>
         body {
             background-color: #54a8a8;
             font-family: "MS Sans Serif", Geneva, sans-serif;
@@ -125,12 +78,10 @@ window.onload = function () {
         .name {
             margin-left: 10px;
         }
-
-</style>
+    </style>
 </head>
 <body>
-
-<div class="window">
+    <div class="window">
         <div class="title-bar">
             <div class="name">RUCQ (Руська)</div>
             <div>
@@ -145,15 +96,15 @@ window.onload = function () {
                 </button>
             </div>
         </div>
-        <div class="content" id="log">
-            <h1>Приватный канал</h1>
-            <form id="form">
-                <input type="submit" value="Send" />
-                <input type="text" id="msg" size="32" autofocus />
-            </form>
+        <div class="content">
+            <h1>Приватный Мессенджер</h1>
+            <p>Добро пожаловать в историю RUCQ (Руська), приватного мессенджера, разработанного в 1995 году для секретных сотрудников спецслужб Российской Федерации.</p>
+            <p>RUCQ использует уникальную систему шифрования для каждого чат-канала, что позволяет гарантировать безопасность и конфиденциальность переписки.</p>
+            <p>Со временем, этот мессенджер перекочевал в знакомый всем ICQ (Аська), став доступным для обычных граждан, и с тех пор стал неотъемлемой частью общения в интернете.</p>
+            <button onclick="location.href = 'login';">Перейти к использованию</button>
         </div>
         <div class="footer">© 1995 RUCQ</div>
-    </div> 
-
+    </div>
 </body>
 </html>
+

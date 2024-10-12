@@ -1,40 +1,49 @@
-// Copyright 2013 The Gorilla WebSocket Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
-
+// If you disassembled this, then know that all the code was written in a day :_(
 package main
 
 import (
-	"flag"
-	"log"
-	"net/http"
+	"rucq/api/crud"
+	"rucq/api/requester"
+	"rucq/webserver"
+
+	"github.com/gin-gonic/gin"
 )
 
-var addr = flag.String("0.0.0.0", ":10016", "http service address")
-
-func serveHome(w http.ResponseWriter, r *http.Request) {
-	log.Println(r.URL)
-	if r.URL.Path != "/" {
-		http.Error(w, "Not found", http.StatusNotFound)
-		return
-	}
-	if r.Method != http.MethodGet {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-	http.ServeFile(w, r, "home.html")
-}
+const webIP = "0.0.0.0:10015"
+const websocketIP = "0.0.0.0:10016"
+const apiIP = "0.0.0.0:10017"
 
 func main() {
-	flag.Parse()
-	hub := newHub()
-	go hub.run()
-	http.HandleFunc("/", serveHome)
-	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		serveWs(hub, w, r)
-	})
-	err := http.ListenAndServe(*addr, nil)
-	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
+	go webserver.StartWebserver(webIP)
+	//go requester.StartWebSocketServer(websocketIP)
+
+	crud.InitDB()
+	r := gin.Default()
+	r.Use(CORSMiddleware())
+
+	r.POST("/authUser", requester.Authenticate)
+	r.POST("/addUser", requester.AddUser)
+	r.POST("/getMessages", requester.GetMessages)
+	r.POST("/rooms", requester.GetRooms)
+	r.POST("/sendMessage", requester.SendMessage)
+	r.POST("/connectRoom", requester.ConnectRoom)
+	r.POST("/createRoom", requester.CreateRoom)
+
+	r.Run(apiIP)
+}
+
+func CORSMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
 	}
 }

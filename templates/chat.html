@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+<title>RuCQ</title>
+<script type="text/javascript">
+window.onload = function () {
+    if (getCookie("login") == undefined && getCookie("password") == undefined && getCookie("token") == undefined) {
+        window.location.replace(location.origin + "/login")
+    }
+    
+    var msg = document.getElementById("msg");
+    var log = document.getElementById("message-list");
+    if (currentRoom === undefined) {
+        let button = document.getElementById("message-button");
+        button.className = "disabled"
+    }
+
+
+    function appendLog(item) {
+        var doScroll = log.scrollTop > log.scrollHeight - log.clientHeight - 1;
+        log.appendChild(item);
+        if (doScroll) {
+            log.scrollTop = log.scrollHeight - log.clientHeight;
+        }
+    }
+
+    document.getElementById("formSendMessage").onsubmit = function () {
+        if (!conn) {
+            return false;
+        }
+        conn.send(msg.value);
+        msg.value = "";
+        return false;
+    };
+
+    createChatList()
+};
+</script>
+<style type="text/css">
+
+
+        body {
+            background-color: #54a8a8;
+            font-family: "MS Sans Serif", Geneva, sans-serif;
+            color: #000;
+            margin: 0;
+            padding: 20px;
+        }
+        .window {
+            background-color: #F0F0F0;
+            border: 2px solid #000;
+            /*width: 400px;*/
+            /*margin: 50px auto;*/
+            padding: 0 0 10px 0;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        .title-bar {
+            background-color: #000080;
+            color: #FFFFFF;
+            padding: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .disabled {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .message-history {
+            padding-left: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #message-block {
+            border: solid;
+            width: auto;
+            padding: 5px 10px 5px 10px;
+            margin: 10px 0px 10px 0px;
+            width: fit-content;
+            height: fit-content;
+            text-align: justify;
+            max-width: 40%;
+        }
+
+        #message-block-user {
+            border: solid;
+            width: auto;
+            padding: 5px 10px 5px 10px;
+            margin: 10px 0px 10px auto;
+            width: fit-content;
+            height: fit-content;
+            text-align: justify;
+            max-width: 40%;
+        }
+
+        #chat-list > li {
+            cursor: pointer;
+            list-style-type: none;
+            margin: 10px 0px 10px 0px;
+        }
+
+        .content {
+            padding: 10px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        h1 {
+            font-size: 18px;
+            margin: 0;
+            text-align: center;
+        }
+        p {
+            margin: 10px 0;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #808080;
+            margin-top: 20px;
+        }
+
+        .controls, .controls img {
+            width: 16px;
+            height: 16px;
+            padding: 0;
+            background-color: none;
+            background: none;
+            margin: 0;
+        }
+
+        button.controls, button.controls:hover {
+            border: 1px solid transparent;
+            background-color: transparent;
+        }
+        button {
+            appearance: none;
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            background-color: #ccc;
+            border: 1px solid #808080;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin: 0 2px;
+            font-family: "MS Sans Serif", Geneva, sans-serif;
+        }
+        button:hover {
+            background-color: #A0A0A0;
+        }
+        .name {
+            margin-left: 10px;
+        }
+        .chats {
+            text-align: center;
+        }
+
+</style>
+</head>
+<body>
+    <div class="window">
+        <div class="title-bar">
+            <div class="name">RUCQ (Руська)</div>
+            <div>
+                <button class="controls" title="Свернуть">
+                    <img src="images/hide.png" alt="Свернуть">
+                </button>
+                <button class="controls" title="Развернуть">
+                    <img src="images/expand.png" alt="Развернуть">
+                </button>
+                <button class="controls" title="Закрыть" onclick="SignOut()">
+                    <img src="images/close.png" alt="Закрыть">
+                </button>
+            </div>
+        </div>
+        <div class="content" id="log">
+            <div class="chat-list" style="float: left; width: 25%; display: flex; flex-direction: column;">
+                <h2 class="chats">Чаты</h2>
+                <form id="formCreateChat" name="formCreateChat" style="margin-top: 10px;">
+                    <input type="text" name="username" id="msg" size="32" autofocus placeholder="Имя пользователя в чате" required/>
+                    <input type="submit" value="➕ Добавить чат" />
+                </form>
+                <form id="formConnectChat" name="formConnectChat" style="margin-top: 10px;">
+                    <input type="text" name="username" id="msg" size="32" autofocus placeholder="Имя пользователя в чате" required/>
+                    <input type="text" name="secret" id="msg" size="32" autofocus placeholder="Секрет чата" required/>
+                    <input type="submit" value="➕ Подключить чат" />
+                </form>
+                <!--<button id="add-chat" title="Добавить чат" onclick="crRoom()">➕ Добавить чат</button>-->
+                <ul id="chat-list">
+                </ul>
+            </div>
+            <div class="chat-window" style="float: right; width: 75%;">
+                <h1 id="chat-title">Текущий чат: не выбран</h1>
+                <div id="message-list" class="message-history" style="height: 300px; overflow-y: scroll;">
+                    <!--<div id="message-block">
+                        <p>Сообщение 1</p>
+                        <p>User1</p>
+                    </div>
+                    <div id="message-block-user">
+                        <p>Сообщниее 2Сообщниее 2Сообщниее 2Сообщниее 2Сообщниее 2Сообщниее 2Сообщниее 2Сообщниее 2Сообщниее 2Сообщниее 2Сообщниее 2Сообщниее 2</p>
+                        <p>User2</p>
+                    </div>
+                    <div id="message-block">
+                        <p>Сообщение 3</p>
+                        <p>User3</p>
+                    </div>-->
+                </div>
+                <form id="formSendMessage" name="formSendMessage" style="margin-top: 10px;">
+                    <input type="text" name="message-text" id="msg" size="32" autofocus placeholder="Ваше сообщение..." required/>
+                    <input id="message-button" type="submit" value="Отправить" />
+                </form>
+            </div>
+        </div>
+        <div class="footer">© 1995 RUCQ</div>
+    </div>
+
+    <script src="script.js"></script> 
+</body>
+</html>
+
+<script lang="javascript">
+    async function crRoom() {
+        var res = await createRoom(getCookie("login"), "testuser")
+        console.log(res)
+        ListAdd("chat-list", res.secret)
+    }
+
+    async function createChatList(params) {
+        let chats = await getRooms(getCookie("login"),getCookie("password"))
+        if (chats.rooms.length != 0 && chats.rooms[0] !== "") {
+            chats.rooms.forEach(element => {
+                ListAdd("chat-list", element)
+            });
+        }
+    }
+
+    const formCreateChat = document.getElementById('formCreateChat');
+    formCreateChat.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(formCreateChat);
+    const username = formData.get('username');
+    var res = await createRoom(getCookie("login"), getCookie("password"), username)
+    ListAdd("chat-list", res.secret)
+    });
+
+    const formConnectChat = document.getElementById('formConnectChat');
+    formConnectChat.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(formConnectChat);
+    const username = formData.get('username');
+    const secret = formData.get('secret');
+    var res = await connectRoom(getCookie("login"), getCookie("password"), username, secret)
+    if (res.error != "") {
+        console.log("Error: " + res.error)
+    } else {
+        ListAdd("chat-list", res.secret)
+    }
+    });
+
+    const formSendMessage = document.getElementById('formSendMessage');
+    formSendMessage.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(formSendMessage);
+    const messageText = formData.get('message-text');
+    var res = await sendMessage(getCookie("token"), messageText, currentRoom)
+    if (res.message == "") {
+        console.log("Error")
+    } else {
+        ListAddMessage("message-list", res.message, messageText, res.message)
+    }
+    });
+</script>
