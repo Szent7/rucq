@@ -5,12 +5,10 @@ services:
     build: .
     ports:
       - "10015:10015"
-      - "10016:10016"
       - "10017:10017"
     depends_on:
       db:
-        condition: service_healthy
-        restart: true
+        condition: service_started
   db:
     image: postgres
     restart: always
@@ -21,10 +19,5 @@ services:
       POSTGRES_PASSWORD: kljk5lj46ioj4o6
     ports:
       - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
-      interval: 10s
-      retries: 5
-      start_period: 30s
-      timeout: 10s  
+
 
