@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 	"rucq/api/data_scheme"
 
 	"github.com/go-pg/pg/v10"
@@ -28,8 +29,11 @@ func connectDB() *pg.DB {
 func InitDB() {
 	db := connectDB()
 	ctx := context.Background()
-	if err := db.Ping(ctx); err != nil {
-		panic(err)
+	for {
+		if err := db.Ping(ctx); err == nil {
+			break
+		}
+		time.Sleep(time.Second * 2)
 	}
 	fmt.Println("Connected to DB")
 	if err := createSchema(db); err != nil {
