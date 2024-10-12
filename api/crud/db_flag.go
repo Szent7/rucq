@@ -8,7 +8,7 @@ import (
 )
 
 var user1 = data_scheme.User{
-	Id:       1,
+	Id:       0,
 	Login:    "FSBs1",
 	Password: "f;lgkho5",
 	Token:    "lD6N1syXDLx3y8ZaBXseWzUrkaKDZya2",
@@ -19,7 +19,7 @@ var user1 = data_scheme.User{
 }
 
 var user2 = data_scheme.User{
-	Id:       2,
+	Id:       0,
 	Login:    "Mayor12mkjg",
 	Password: "jghjfgujghj54647bjv57y",
 	Token:    "VYk697dLqUuE1fBUWjOfvMBIRlkzjJKZ",
@@ -30,7 +30,7 @@ var user2 = data_scheme.User{
 }
 
 var user3 = data_scheme.User{
-	Id:       3,
+	Id:       0,
 	Login:    "Polkovnyk1971",
 	Password: "f;lgkho5",
 	Token:    "CgVOtG9Uw6qymuLQPUQ1D3b2Sz6r57oH",
@@ -41,7 +41,7 @@ var user3 = data_scheme.User{
 }
 
 var user4 = data_scheme.User{
-	Id:       4,
+	Id:       0,
 	Login:    "BestPresidentOfRussia2024Ever",
 	Password: "24hjccbzdgthtl20",
 	Token:    "L6QQNhjHpXGNlY5woNkW9d7tJtbPc0Sp",
@@ -52,7 +52,7 @@ var user4 = data_scheme.User{
 }
 
 var user5 = data_scheme.User{
-	Id:       5,
+	Id:       0,
 	Login:    "jr.Lieutenant",
 	Password: "Z7Pqh8v7",
 	Token:    "AIZFtSDauMYMcdGfrp6rbeIv0T1fHPdu",
@@ -63,7 +63,7 @@ var user5 = data_scheme.User{
 }
 
 var room1 = data_scheme.Rooms{
-	Id: 1,
+	Id: 0,
 	Users: data_scheme.Users{
 		UsersList: []data_scheme.UsersMapDB{
 			{
@@ -146,7 +146,7 @@ var room1 = data_scheme.Rooms{
 }
 
 var room2 = data_scheme.Rooms{
-	Id: 2,
+	Id: 0,
 	Users: data_scheme.Users{
 		UsersList: []data_scheme.UsersMapDB{
 			{
