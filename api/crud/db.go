@@ -10,7 +10,7 @@ import (
 	"github.com/go-pg/pg/v10/orm"
 )
 
-const addr = "localhost:5432"
+const addr = "db:5432"
 const user = "rucqUser"
 const password = "kljk5lj46ioj4o6"
 const db_name = "rucqDB"
