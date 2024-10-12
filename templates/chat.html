@@ -84,6 +84,10 @@ window.onload = function () {
             height: fit-content;
             text-align: justify;
             max-width: 40%;
+            display: inline-flex;
+            flex-wrap: nowrap;
+            flex-direction: column-reverse;
+            /* padding-right: 5px; */
         }
 
         #message-block-user {
@@ -95,12 +99,17 @@ window.onload = function () {
             height: fit-content;
             text-align: justify;
             max-width: 40%;
+            display: inline-flex;
+            flex-wrap: nowrap;
+            flex-direction: column-reverse;
         }
 
         #chat-list > li {
             cursor: pointer;
             list-style-type: none;
             margin: 10px 0px 10px 0px;
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
 
         .content {
@@ -157,6 +166,15 @@ window.onload = function () {
             text-align: center;
         }
 
+        ul#chat-list {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 80%;
+            text-align: left;
+            padding-left: 5px;
+        }
+
 </style>
 </head>
 <body>
@@ -177,38 +195,25 @@ window.onload = function () {
         </div>
         <div class="content" id="log">
             <div class="chat-list" style="float: left; width: 25%; display: flex; flex-direction: column;">
-                <h2 class="chats">Чаты</h2>
+                <h2 class="chats">Каналы связи:</h2>
                 <form id="formCreateChat" name="formCreateChat" style="margin-top: 10px;">
-                    <input type="text" name="username" id="msg" size="32" autofocus placeholder="Имя пользователя в чате" required/>
-                    <input type="submit" value="➕ Добавить чат" />
+                    <input type="text" name="username" id="msg" size="32" autofocus placeholder="Ваш позыввной в канале" required/>
+                    <input type="submit" value="➕ Создать канал связи" />
                 </form>
                 <form id="formConnectChat" name="formConnectChat" style="margin-top: 10px;">
-                    <input type="text" name="username" id="msg" size="32" autofocus placeholder="Имя пользователя в чате" required/>
-                    <input type="text" name="secret" id="msg" size="32" autofocus placeholder="Секрет чата" required/>
-                    <input type="submit" value="➕ Подключить чат" />
+                    <input type="text" name="username" id="msg" size="32" autofocus placeholder="Ваш позывной в канале" required/>
+                    <input type="text" name="secret" id="msg" size="32" autofocus placeholder="Кодовый шифр" required/>
+                    <input type="submit" value="➕ Подключиться в канал связи" />
                 </form>
-                <!--<button id="add-chat" title="Добавить чат" onclick="crRoom()">➕ Добавить чат</button>-->
                 <ul id="chat-list">
                 </ul>
             </div>
             <div class="chat-window" style="float: right; width: 75%;">
-                <h1 id="chat-title">Текущий чат: не выбран</h1>
-                <div id="message-list" class="message-history" style="height: 300px; overflow-y: scroll;">
-                    <!--<div id="message-block">
-                        <p>Сообщение 1</p>
-                        <p>User1</p>
-                    </div>
-                    <div id="message-block-user">
-                        <p>Сообщниее 2Сообщниее 2Сообщниее 2Сообщниее 2Сообщниее 2Сообщниее 2Сообщниее 2Сообщниее 2Сообщниее 2Сообщниее 2Сообщниее 2Сообщниее 2</p>
-                        <p>User2</p>
-                    </div>
-                    <div id="message-block">
-                        <p>Сообщение 3</p>
-                        <p>User3</p>
-                    </div>-->
+                <h1 id="chat-title">Текущий канал связи: не выбран</h1>
+                <div id="message-list" class="message-history" style="height: 500px; overflow-y: scroll;">
                 </div>
                 <form id="formSendMessage" name="formSendMessage" style="margin-top: 10px;">
-                    <input type="text" name="message-text" id="msg" size="32" autofocus placeholder="Ваше сообщение..." required/>
+                    <input type="text" name="message-text" id="msg" size="64" autofocus placeholder="Ваше сообщение..." required/>
                     <input id="message-button" type="submit" value="Отправить" />
                 </form>
             </div>
