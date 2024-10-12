@@ -230,6 +230,19 @@ async function OpenChat(roomId) {
       continue;
     }
     liTags[i].className = "";
+  }
+
+ // found.className = "disabled"
+
+  var res = await getMessages(getCookie("token"), roomId)
+    if (res.error != "") {
+        console.log("Error: " + res.message)
+    } else {
+      if (res.messagelist != null) {
+        res.messagelist.forEach(element => {
+          ListAddMessage("message-list", element.username, element.message, res.username)
+        });
+    }
 
     if (window["WebSocket"]) {
       conn = new WebSocket("ws://" + document.location.hostname + ":10015/ws");
@@ -254,24 +267,11 @@ async function OpenChat(roomId) {
           ListAddMessage("message-list", element.username, element.message, "")
         });
       };
-      conn.cl
   } else {
       var item = document.createElement("div");
       item.innerHTML = "<b>Your browser does not support WebSockets.</b>";
       //appendLog(item);
   }
-  }
- // found.className = "disabled"
-
-  var res = await getMessages(getCookie("token"), roomId)
-    if (res.error != "") {
-        console.log("Error: " + res.message)
-    } else {
-      if (res.messagelist != null) {
-        res.messagelist.forEach(element => {
-          ListAddMessage("message-list", element.username, element.message, res.username)
-        });
-    }
         //console.log("Success: " + res.message)
     }
 }

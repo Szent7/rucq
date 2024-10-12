@@ -10,7 +10,8 @@ import (
 )
 
 const webIP = "0.0.0.0:10015"
-const websocketIP = "0.0.0.0:10016"
+
+// const websocketIP = "0.0.0.0:10016"
 const apiIP = "0.0.0.0:10017"
 
 func main() {
